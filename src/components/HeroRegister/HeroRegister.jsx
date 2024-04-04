@@ -1,7 +1,10 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
+import { useState } from "react";
 
 const HeroRegister = () => {
+	const [registerError, setRegisterError] = useState("");
+
 	const handleRegister = (e) => {
 		e.preventDefault();
 		const email = e.target.email.value;
@@ -10,7 +13,10 @@ const HeroRegister = () => {
 
 		createUserWithEmailAndPassword(auth, email, password)
 			.then((result) => console.log(result.user))
-			.catch((err) => console.log(err));
+			.catch((err) => {
+				console.log(err);
+				setRegisterError(err.message);
+			});
 	};
 
 	return (
@@ -66,6 +72,7 @@ const HeroRegister = () => {
 								<button className="btn btn-primary">Login</button>
 							</div>
 						</form>
+						{registerError && <p>{registerError}</p>}
 					</div>
 				</div>
 			</div>
