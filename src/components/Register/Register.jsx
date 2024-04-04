@@ -1,8 +1,8 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
 import { useState } from "react";
-import { FaEyeSlash } from "react-icons/fa6";
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Register = () => {
 	const [registerError, setRegisterError] = useState("");
@@ -13,7 +13,8 @@ const Register = () => {
 		e.preventDefault();
 		const email = e.target.email.value;
 		const password = e.target.password.value;
-		console.log(email, password);
+		const accepted = e.target.terms.checked;
+		console.log(email, password, accepted);
 
 		// reset error, success
 		setRegisterError("");
@@ -26,6 +27,9 @@ const Register = () => {
 			setRegisterError(
 				"Your password should have at least one upper case letter"
 			);
+			return;
+		} else if (!accepted) {
+			setRegisterError("Please accept our terms and conditions");
 			return;
 		}
 
@@ -47,7 +51,7 @@ const Register = () => {
 				<h2 className="mb-8 text-3xl">Please Register</h2>
 				<form onSubmit={handleRegister}>
 					<input
-						className="w-3/4 px-4 py-2 mb-4"
+						className="w-full px-4 py-2 mb-4"
 						type="email"
 						name="email"
 						placeholder="Email Address"
@@ -55,23 +59,39 @@ const Register = () => {
 						required
 					/>
 					<br />
-					<input
-						className="w-3/4 px-4 py-2 mb-4"
-						type={showPassword ? "text" : "password"}
-						name="password"
-						placeholder="Password"
-						id=""
-						required
-					/>
-					<span
-						className=""
-						onClick={() => setShowPassword(!showPassword)}
-					>
-						{showPassword ? <FaEyeSlash /> : <FaEye />}
-					</span>
+					<div className="relative border">
+						<input
+							className="w-full px-4 py-2"
+							type={showPassword ? "text" : "password"}
+							name="password"
+							placeholder="Password"
+							id=""
+							required
+						/>
+						<span
+							className="absolute text-2xl transform -translate-y-1/2 cursor-pointer top-1/2 right-2 hover:text-secondary"
+							onClick={() => setShowPassword(!showPassword)}
+						>
+							{showPassword ? <FaEyeSlash /> : <FaEye />}
+						</span>
+					</div>
+					<br />
+					<div className="mb-4">
+						<input
+							type="checkbox"
+							name="terms"
+							id="terms"
+						/>
+						<label
+							className="ml-2"
+							htmlFor="terms"
+						>
+							Accept our <Link className="underline">Terms and Conditions</Link>
+						</label>
+					</div>
 					<br />
 					<input
-						className="w-3/4 mb-4 btn btn-secondary"
+						className="w-full mb-4 btn btn-secondary"
 						type="submit"
 						value="Register"
 					/>
