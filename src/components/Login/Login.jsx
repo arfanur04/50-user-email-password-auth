@@ -25,7 +25,16 @@ const Login = () => {
 		signInWithEmailAndPassword(auth, email, password)
 			.then((result) => {
 				console.log(result.user);
-				setSuccess("User Logged in successfully");
+				if (result.user.emailVerified) {
+					setSuccess("User Logged in successfully");
+				} else {
+					alert("please verify your email address");
+
+					// send verification email
+					// sendEmailVerification(result.user).then(() => {
+					// 	alert("Please check your email and verify your account");
+					// });
+				}
 			})
 			.catch((err) => {
 				console.error("err", err);
@@ -38,10 +47,10 @@ const Login = () => {
 		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 		if (!email) {
-			console.log("Please Provide email", emailRef.current.value);
+			console.log("Please Provide email");
 			return;
 		} else if (!emailRegex.test(email)) {
-			console.log("please write a valid email: ");
+			console.log("please write a valid email: ", emailRef.current.value);
 			return;
 		}
 
