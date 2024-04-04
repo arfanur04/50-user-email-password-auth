@@ -98,6 +98,15 @@ const Register = () => {
 				</form>
 				{registerError && <p className="text-red-700">{registerError}</p>}
 				{success && <p className="text-green-600">{success}</p>}
+				<p>
+					Already have an account? Please{" "}
+					<Link
+						to={"/login"}
+						className="underline"
+					>
+						Login
+					</Link>
+				</p>
 			</div>
 		</div>
 	);

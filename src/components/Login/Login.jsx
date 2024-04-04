@@ -1,17 +1,55 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+	sendPasswordResetEmail,
+	signInWithEmailAndPassword,
+} from "firebase/auth";
 import auth from "../../firebase/firebase.config";
+import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Login = () => {
+	const [registerError, setRegisterError] = useState("");
+	const [success, setSuccess] = useState("");
+	const emailRef = useRef(null);
+
 	const handleLogin = (e) => {
 		e.preventDefault();
 		const email = e.target.email.value;
 		const password = e.target.password.value;
 		console.log(email, password);
 
+		// reset error, success
+		setRegisterError("");
+		setSuccess("");
+
 		// add validation
 		signInWithEmailAndPassword(auth, email, password)
 			.then((result) => {
 				console.log(result.user);
+				setSuccess("User Logged in successfully");
+			})
+			.catch((err) => {
+				console.error("err", err);
+				setRegisterError(err.message);
+			});
+	};
+
+	const handleForgetPassword = () => {
+		const email = emailRef.current.value;
+		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+		if (!email) {
+			console.log("Please Provide email", emailRef.current.value);
+			return;
+		} else if (!emailRegex.test(email)) {
+			console.log("please write a valid email: ");
+			return;
+		}
+
+		// send validation email
+		sendPasswordResetEmail(auth, email)
+			.then(() => {
+				// Password reset email sent!
+				alert("Please check your email");
 			})
 			.catch((err) => {
 				console.error("err", err);
@@ -42,6 +80,7 @@ const Login = () => {
 								type="email"
 								placeholder="email"
 								name="email"
+								ref={emailRef}
 								className="input input-bordered"
 								required
 							/>
@@ -58,18 +97,29 @@ const Login = () => {
 								required
 							/>
 							<label className="label">
-								<a
-									href="#"
+								<Link
+									onClick={handleForgetPassword}
 									className="label-text-alt link link-hover"
 								>
 									Forgot password?
-								</a>
+								</Link>
 							</label>
 						</div>
 						<div className="mt-6 form-control">
 							<button className="btn btn-primary">Login</button>
 						</div>
 					</form>
+					{registerError && <p className="text-red-700">{registerError}</p>}
+					{success && <p className="text-green-600">{success}</p>}
+					<p>
+						New to this website Please{" "}
+						<Link
+							to={"/register"}
+							className="underline"
+						>
+							Register
+						</Link>
+					</p>
 				</div>
 			</div>
 		</div>
